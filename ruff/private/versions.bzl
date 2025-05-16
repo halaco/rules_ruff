@@ -1,11 +1,10 @@
-"""Mirror of release info
+"""Mirror of ruff release info
 
-TODO: generate this file from GitHub API"""
+New releases is added by running the following command:
+    $ bazel run //tools:vversion_importer -- <ruff_version>"""
 
 LATEST_RUFF_VERSION = "0.11.10"
 
-# The integrity hashes can be computed with
-# shasum -b -a 384 [downloaded file] | awk '{ print $1 }' | xxd -r -p | base64
 RUFF_VERSIONS = {
     "0.11.10": {
         "aarch64-apple-darwin": "sha256-HEGHxezXZTW3bpka8RFNnJlH/mnm0aacntZyPWd3pT4=",
