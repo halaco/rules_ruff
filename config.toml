@@ -1,0 +1,34 @@
+[files]
+version_file = "ruff/private/versions.bzl"
+platform_file = "ruff/private/platforms.bzl"
+
+[ruff_release]
+base_url = "https://github.com/astral-sh/ruff/releases/download/"
+file = "{version}/ruff-{arch}-{vender}-{os}.{ext}"
+hash = "sha256"
+
+[platforms]
+
+[platforms.x64_linux]
+arch = "x86_64"
+os = "linux-gnu"
+vender = "unknown"
+ext = "tar.gz"
+
+[platforms.arm64_linux]
+arch = "aarch64"
+os = "linux-gnu"
+vender = "unknown"
+ext = "tar.gz"
+
+[platforms.x64_macos]
+arch = "x86_64"
+os = "darwin"
+vender = "apple"
+ext = "tar.gz"
+
+[platforms.arm64_macos]
+arch = "aarch64"
+os = "darwin"
+vender = "apple"
+ext = "tar.gz"
