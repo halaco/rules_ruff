@@ -17,3 +17,9 @@ bzl_library(
     srcs = ["resolved_toolchain.bzl"],
     visibility = ["//ruff:__subpackages__"],
 )
+
+exports_files(
+    [
+        "versions.bzl",
+    ],
+)

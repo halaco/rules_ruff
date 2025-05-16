@@ -1,0 +1,14 @@
+load("@my_deps//:requirements.bzl", "requirement")
+load("@rules_python//python:defs.bzl", "py_binary")
+
+py_binary(
+    name = "version_importer",
+    srcs = ["version_importer.py"],
+    data = [
+        "//:config.toml",
+        "//ruff/private:versions.bzl",
+    ],
+    deps = [
+        requirement("requests"),
+    ],
+)
