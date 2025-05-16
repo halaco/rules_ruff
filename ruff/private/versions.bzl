@@ -2,6 +2,8 @@
 
 TODO: generate this file from GitHub API"""
 
+LATEST_RUFF_VERSION = "1.14.2"
+
 # The integrity hashes can be computed with
 # shasum -b -a 384 [downloaded file] | awk '{ print $1 }' | xxd -r -p | base64
 RUFF_VERSIONS = {
