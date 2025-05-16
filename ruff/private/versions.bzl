@@ -1,7 +1,7 @@
 """Mirror of ruff release info
 
 New releases is added by running the following command:
-    $ bazel run //tools:vversion_importer -- <ruff_version>"""
+    $ bazel run //tools:version_importer -- <ruff_version>"""
 
 LATEST_RUFF_VERSION = "0.11.10"
 
