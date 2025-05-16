@@ -157,7 +157,7 @@
   "moduleExtensions": {
     "//ruff:extensions.bzl%ruff": {
       "general": {
-        "bzlTransitiveDigest": "bqXmerNY0OgLZ6cteaAFMOKM3plUidBt5JcBTrKjc8o=",
+        "bzlTransitiveDigest": "579QMazuqUh3AnOQkiau52cCc1ZYD0mxjgxACQ2HrJs=",
         "usagesDigest": "rteNb+8SsozO2XdLtN7AEnk/CA4/qV5q2rnJMDRaE5c=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
