@@ -5,6 +5,7 @@ platform_file = "ruff/private/platforms.bzl"
 [ruff_release]
 base_url = "https://github.com/astral-sh/ruff/releases/download/"
 file = "{version}/ruff-{arch}-{vender}-{os}.{ext}"
+arch_key = "{arch}-{vender}-{os}"
 hash = "sha256"
 
 [platforms]
