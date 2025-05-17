@@ -97,8 +97,9 @@ func extrantOldVeirsions(path string) ([]string, error) {
 	return lines, nil
 }
 
-func fetchRuffRelease(version string, config Config) ( map[string]string, error) {
+func fetchRuffRelease(version string, config Config) (map[string]string, error) {
 	baseUrl := config.RuffRelease.BaseURL
+	// Converting the fileName to a template compatible with Go's text/template
 	fileName := config.RuffRelease.File
 	fileName = strings.ReplaceAll(fileName, "{", "{{.")
 	fileName = strings.ReplaceAll(fileName, "}", "}}")
@@ -109,17 +110,17 @@ func fetchRuffRelease(version string, config Config) ( map[string]string, error)
 	for key, value := range config.Platforms {
 
 		data := map[string]string{
-			"arch": value.Arch,
-			"vender": value.Vender,
-			"os":   value.OS,
-			"ext":  value.Ext,
+			"arch":    value.Arch,
+			"vender":  value.Vender,
+			"os":      value.OS,
+			"ext":     value.Ext,
 			"version": version,
 		}
 
 		var buf bytes.Buffer
 		err := template.Must(template.New("example").Parse(urlTemplate)).Execute(&buf, data)
 		if err != nil {
-			panic(err)
+			return nil, fmt.Errorf("failed to execute template: %w", err)
 		}
 
 		url := buf.String()
@@ -158,6 +159,7 @@ func fetchRuffRelease(version string, config Config) ( map[string]string, error)
 }
 
 func updateVersionFile(config Config, version string, integrities map[string]string) error {
+	// Converting the arcKey to a template compatible with Go's text/template
 	archKey := config.RuffRelease.ArchKey
 	archKey = strings.ReplaceAll(archKey, "{", "{{.")
 	archKeyTemplate := strings.ReplaceAll(archKey, "}", "}}")
@@ -190,7 +192,7 @@ func updateVersionFile(config Config, version string, integrities map[string]str
 	defer file.Close()
 
 	file.Truncate(0) // Clear the file
-	file.Seek(0, 0) // Move the cursor to the beginning
+	file.Seek(0, 0)  // Move the cursor to the beginning
 	for _, line := range lines {
 		if strings.HasPrefix(line, "RUFF_VERSIONS") {
 			fmt.Println(line)
@@ -214,9 +216,9 @@ func updateVersionFile(config Config, version string, integrities map[string]str
 			for _, k := range keys {
 				value := config.Platforms[k]
 				data := map[string]string{
-					"arch": value.Arch,
+					"arch":   value.Arch,
 					"vender": value.Vender,
-					"os":   value.OS,
+					"os":     value.OS,
 				}
 				var buf bytes.Buffer
 				err := template.Must(template.New("example").Parse(archKeyTemplate)).Execute(&buf, data)

@@ -53,6 +53,7 @@ func main() {
 	// Output the values
 	fmt.Printf("Config file: %v\n", config)
 
+	// Converting the arcKey to a template compatible with Go's text/template
 	archKey := config.RuffRelease.ArchKey
 	archKey = strings.ReplaceAll(archKey, "{", "{{.")
 	archKeyTemplate := strings.ReplaceAll(archKey, "}", "}}")
@@ -133,7 +134,8 @@ func main() {
 		var buf bytes.Buffer
 		err := template.Must(template.New("example").Parse(archKeyTemplate)).Execute(&buf, data)
 		if err != nil {
-			panic(err)
+			fmt.Fprintf(os.Stderr, "Error executing template: %v\n", err)
+			os.Exit(1)
 		}
 		key := buf.String()
 		line := fmt.Sprintf("    \"%s\": struct(", key)
