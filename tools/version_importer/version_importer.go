@@ -221,7 +221,8 @@ func updateVersionFile(config Config, version string, integrities map[string]str
 				var buf bytes.Buffer
 				err := template.Must(template.New("example").Parse(archKeyTemplate)).Execute(&buf, data)
 				if err != nil {
-					panic(err)
+					fmt.Fprintf(os.Stderr, "Error executing template: %v\n", err)
+					return err
 				}
 				key := buf.String()
 
