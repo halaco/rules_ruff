@@ -1,0 +1,24 @@
+load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+gazelle(
+    name = "gazelle",
+)
+
+go_library(
+    name = "platform_generator_lib",
+    srcs = ["platform_generator.go"],
+    importpath = "halaco/rules_ruff/platform_generator",
+    visibility = ["//visibility:private"],
+    deps = ["@com_github_burntsushi_toml//:toml"],
+)
+
+go_binary(
+    name = "platform_generator",
+    data = [
+        "//:config.toml",
+        "//ruff/private:platforms.bzl",
+    ],
+    embed = [":platform_generator_lib"],
+    visibility = ["//visibility:public"],
+)

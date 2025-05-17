@@ -31,6 +31,7 @@ type FilesConfig struct {
 type RuffReleaseConfig struct {
 	BaseURL string `toml:"base_url"`
 	File    string `toml:"file"`
+	ArchKey string `toml:"arch_key"`
 	Hash    string `toml:"hash"`
 }
 
@@ -96,8 +97,9 @@ func extrantOldVeirsions(path string) ([]string, error) {
 	return lines, nil
 }
 
-func fetchRuffRelease(version string, config Config) ( map[string]string, error) {
+func fetchRuffRelease(version string, config Config) (map[string]string, error) {
 	baseUrl := config.RuffRelease.BaseURL
+	// Converting the fileName to a template compatible with Go's text/template
 	fileName := config.RuffRelease.File
 	fileName = strings.ReplaceAll(fileName, "{", "{{.")
 	fileName = strings.ReplaceAll(fileName, "}", "}}")
@@ -108,17 +110,17 @@ func fetchRuffRelease(version string, config Config) ( map[string]string, error)
 	for key, value := range config.Platforms {
 
 		data := map[string]string{
-			"arch": value.Arch,
-			"vender": value.Vender,
-			"os":   value.OS,
-			"ext":  value.Ext,
+			"arch":    value.Arch,
+			"vender":  value.Vender,
+			"os":      value.OS,
+			"ext":     value.Ext,
 			"version": version,
 		}
 
 		var buf bytes.Buffer
 		err := template.Must(template.New("example").Parse(urlTemplate)).Execute(&buf, data)
 		if err != nil {
-			panic(err)
+			return nil, fmt.Errorf("failed to execute template: %w", err)
 		}
 
 		url := buf.String()
@@ -156,7 +158,13 @@ func fetchRuffRelease(version string, config Config) ( map[string]string, error)
 	return integrities, nil
 }
 
-func updateVersionFile(path string, version string, integrities map[string]string) error {
+func updateVersionFile(config Config, version string, integrities map[string]string) error {
+	// Converting the arcKey to a template compatible with Go's text/template
+	archKey := config.RuffRelease.ArchKey
+	archKey = strings.ReplaceAll(archKey, "{", "{{.")
+	archKeyTemplate := strings.ReplaceAll(archKey, "}", "}}")
+	path := config.Files.VersionFile
+
 	var lines []string
 
 	input, err := os.Open(path)
@@ -184,7 +192,7 @@ func updateVersionFile(path string, version string, integrities map[string]strin
 	defer file.Close()
 
 	file.Truncate(0) // Clear the file
-	file.Seek(0, 0) // Move the cursor to the beginning
+	file.Seek(0, 0)  // Move the cursor to the beginning
 	for _, line := range lines {
 		if strings.HasPrefix(line, "RUFF_VERSIONS") {
 			fmt.Println(line)
@@ -206,7 +214,21 @@ func updateVersionFile(path string, version string, integrities map[string]strin
 			sort.Strings(keys)
 
 			for _, k := range keys {
-				line = fmt.Sprintf("        \"%s\": \"%s\",", k, integrities[k])
+				value := config.Platforms[k]
+				data := map[string]string{
+					"arch":   value.Arch,
+					"vender": value.Vender,
+					"os":     value.OS,
+				}
+				var buf bytes.Buffer
+				err := template.Must(template.New("example").Parse(archKeyTemplate)).Execute(&buf, data)
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "Error executing template: %v\n", err)
+					return err
+				}
+				key := buf.String()
+
+				line = fmt.Sprintf("        \"%s\": \"%s\",", key, integrities[k])
 				fmt.Println(line)
 				if _, err := file.WriteString(line + "\n"); err != nil {
 					fmt.Fprintf(os.Stderr, "Error writing to file: %v\n", err)
@@ -222,6 +244,20 @@ func updateVersionFile(path string, version string, integrities map[string]strin
 			}
 		} else if strings.HasPrefix(line, "RUFF_LAST_VERSIONS") {
 			line = fmt.Sprintf("RUFF_LAST_VERSIONS = \"%s\"", version)
+			fmt.Println(line)
+			if _, err := file.WriteString(line + "\n"); err != nil {
+				fmt.Fprintf(os.Stderr, "Error writing to file: %v\n", err)
+				return err
+			}
+		} else if strings.HasPrefix(line, "BINARY_FILE_BASE_URL") {
+			line = fmt.Sprintf("BINARY_FILE_BASE_URL = \"%s\"", config.RuffRelease.BaseURL)
+			fmt.Println(line)
+			if _, err := file.WriteString(line + "\n"); err != nil {
+				fmt.Fprintf(os.Stderr, "Error writing to file: %v\n", err)
+				return err
+			}
+		} else if strings.HasPrefix(line, "BINARY_FILE_TEMPLATE") {
+			line = fmt.Sprintf("BINARY_FILE_TEMPLATE = \"%s\"", config.RuffRelease.File)
 			fmt.Println(line)
 			if _, err := file.WriteString(line + "\n"); err != nil {
 				fmt.Fprintf(os.Stderr, "Error writing to file: %v\n", err)
@@ -286,5 +322,5 @@ func main() {
 	}
 	fmt.Printf("Fetched integrities: %v\n", integrities)
 
-	updateVersionFile(config.Files.VersionFile, version, integrities)
+	updateVersionFile(config, version, integrities)
 }
