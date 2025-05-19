@@ -71,7 +71,7 @@ ruff_toolchain = rule(
             mandatory = False,
         ),
     },
-    doc = """Defines a ruff compiler/runtime toolchain.
+    doc = """Defines a ruff executable binary toolchain.
 
 For usage see https://docs.bazel.build/versions/main/toolchains.html#defining-toolchains.
 """,
