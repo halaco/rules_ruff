@@ -137,7 +137,7 @@
   "moduleExtensions": {
     "@@io_halaco_rules_ruff+//ruff:extensions.bzl%ruff": {
       "general": {
-        "bzlTransitiveDigest": "KyYTf/Gf0Jb4FQHqVs6m4Yp00VcMw2bQZJnx6pqIfPg=",
+        "bzlTransitiveDigest": "gPs8EzrWoljXIdatb7M+1q/sGRGieEXTgBTaEyD2s88=",
         "usagesDigest": "uOIuNg9YdHYzagtKlrzHZbFEmlfk9bq5mzK6xGjItHI=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
