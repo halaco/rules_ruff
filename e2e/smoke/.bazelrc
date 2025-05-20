@@ -1,0 +1,4 @@
+startup --windows_enable_symlinks
+common --enable_platform_specific_config
+# Enable runfiles on Windows (symlink must be enabled)
+build:windows --enable_runfiles

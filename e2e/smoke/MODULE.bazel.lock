@@ -137,7 +137,7 @@
   "moduleExtensions": {
     "@@io_halaco_rules_ruff+//ruff:extensions.bzl%ruff": {
       "general": {
-        "bzlTransitiveDigest": "gPs8EzrWoljXIdatb7M+1q/sGRGieEXTgBTaEyD2s88=",
+        "bzlTransitiveDigest": "T3esJWdmT//QNX6tOT8euonyQLbjrJrpYOJTNwCGM/8=",
         "usagesDigest": "uOIuNg9YdHYzagtKlrzHZbFEmlfk9bq5mzK6xGjItHI=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -171,6 +171,13 @@
               "ruff_version": "0.11.9"
             }
           },
+          "ruff_x86_64-pc-windows-msvc": {
+            "repoRuleId": "@@io_halaco_rules_ruff+//ruff:repositories.bzl%ruff_repositories",
+            "attributes": {
+              "platform": "x86_64-pc-windows-msvc",
+              "ruff_version": "0.11.9"
+            }
+          },
           "ruff_toolchains": {
             "repoRuleId": "@@io_halaco_rules_ruff+//ruff/private:toolchains_repo.bzl%toolchains_repo",
             "attributes": {
@@ -178,7 +185,8 @@
                 "aarch64-unknown-linux-gnu",
                 "aarch64-apple-darwin",
                 "x86_64-unknown-linux-gnu",
-                "x86_64-apple-darwin"
+                "x86_64-apple-darwin",
+                "x86_64-pc-windows-msvc"
               ],
               "user_repository_name": "ruff"
             }

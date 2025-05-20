@@ -44,6 +44,8 @@ _ATTRS = {
 def _ruff_repo_impl(repository_ctx):
     meta = RUFF_PLATFORMS[repository_ctx.attr.platform]
 
+    is_windows = meta.os == "windows-msvc"
+
     file = BINARY_FILE_TEMPLATE.format(
         version = repository_ctx.attr.ruff_version,
         os = meta.os,
@@ -52,7 +54,10 @@ def _ruff_repo_impl(repository_ctx):
         ext = meta.ext,
     )
     url = BINARY_FILE_BASE_URL + file
-    strip_prefix = paths.basename(file).replace("." + meta.ext, "")
+    if meta.ext == "zip":
+        strip_prefix = ""
+    else:
+        strip_prefix = paths.basename(file).replace("." + meta.ext, "")
 
     repository_ctx.download_and_extract(
         url = url,
@@ -64,12 +69,16 @@ load("@io_halaco_rules_ruff//ruff:toolchain.bzl", "ruff_toolchain")
 
 ruff_toolchain(
     name = "ruff_toolchain",
-    target_tool = select({
+    target_tool = {target_tool},
+    is_windows = {is_windows},
+)
+""".format(
+        target_tool = """select({
         "@bazel_tools//src/conditions:host_windows": "ruff.exe",
         "//conditions:default": "ruff",
-    }),
-)
-"""
+    })""",
+        is_windows = is_windows,
+    )
 
     # Base BUILD file for this repository
     repository_ctx.file("BUILD.bazel", build_content)

@@ -10,6 +10,12 @@ common --enable_bzlmod
 # https://bazelbuild.slack.com/archives/C014RARENH0/p1691158021917459?thread_ts=1691156601.420349&cid=C014RARENH0
 common --check_direct_dependencies=off
 
+# Windows support
+startup --windows_enable_symlinks
+common --enable_platform_specific_config
+# Enable runfiles on Windows (symlink must be enabled)
+build:windows --enable_runfiles
+
 # Load any settings specific to the current user.
 # .bazelrc.user should appear in .gitignore so that settings are not shared with team members
 # This needs to be last statement in this

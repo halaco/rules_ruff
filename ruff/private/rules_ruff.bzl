@@ -2,10 +2,17 @@
 This module defines Bazel rules for integrating Ruff, a Python linter and formatter.
 """
 
+def _as_path(path, is_windows):
+    if is_windows:
+        return path.replace("/", "\\")
+    else:
+        return path
+
+
 def _ruff_check_impl(ctx, extra_flag):
     ruffinfo = ctx.toolchains["//ruff:toolchain_type"].ruffinfo
-
-    ruff_exe = ruffinfo.target_tool_path
+    is_windows = ruffinfo.is_windows
+    ruff_exe = _as_path(ruffinfo.target_tool_path, is_windows)
 
     if ctx.attr.select:
         select = "".join(["--select=", ",".join(ctx.attr.select)])
@@ -20,22 +27,26 @@ def _ruff_check_impl(ctx, extra_flag):
     if ctx.attr.config:
         if ignore != "" or select != "":
             fail("You cannot use --config with --select or --ignore")
-        config = "--config " + ctx.file.config.short_path
+        config = "--config " + _as_path(ctx.file.config.short_path, is_windows)
     else:
         config = ""
 
     command = "{ruff_exe} check {paths} {select} {ignore} {config} {extra_flag}".format(
         ruff_exe = ruff_exe,
-        paths = " ".join([f.short_path for f in ctx.files.srcs]),
+        paths = " ".join([_as_path(f.short_path, is_windows) for f in ctx.files.srcs]),
         select = select,
         ignore = ignore,
         config = config,
         extra_flag = extra_flag,
     )
 
-    exe_file = ctx.actions.declare_file(ctx.label.name)
+    if is_windows:
+        command_ext = ".bat"
+    else:
+        command_ext = ".sh"
+    command_file = ctx.actions.declare_file(ctx.label.name + command_ext)
     ctx.actions.write(
-        output = exe_file,
+        output = command_file,
         content = command,
     )
     runfiles = ctx.runfiles(
@@ -52,7 +63,7 @@ def _ruff_check_impl(ctx, extra_flag):
     )
     return DefaultInfo(
         runfiles = runfiles,
-        executable = exe_file,
+        executable = command_file,
     )
 
 def _ruff_check_test_impl(ctx):
@@ -89,17 +100,21 @@ ruff_check_fix = rule(
 
 def _ruff_format_impl(ctx, extra_flag):
     ruffinfo = ctx.toolchains["//ruff:toolchain_type"].ruffinfo
-
-    ruff_exe = ruffinfo.target_tool_path
+    is_windows = ruffinfo.is_windows
+    ruff_exe = _as_path(ruffinfo.target_tool_path, is_windows)
 
     command = "{ruff_exe} format {extra_flag} {paths}".format(
         ruff_exe = ruff_exe,
-        paths = " ".join([f.short_path for f in ctx.files.srcs]),
+        paths = " ".join([_as_path(f.short_path, is_windows) for f in ctx.files.srcs]),
         extra_flag = extra_flag,
     )
-    exe_file = ctx.actions.declare_file(ctx.label.name)
+    if is_windows:
+        command_ext = ".bat"
+    else:
+        command_ext = ".sh"
+    command_file = ctx.actions.declare_file(ctx.label.name + command_ext)
     ctx.actions.write(
-        output = exe_file,
+        output = command_file,
         content = command,
     )
 
@@ -114,7 +129,7 @@ def _ruff_format_impl(ctx, extra_flag):
 
     return DefaultInfo(
         runfiles = runfiles,
-        executable = exe_file,
+        executable = command_file,
     )
 
 def _ruff_format_test_impl(ctx):
