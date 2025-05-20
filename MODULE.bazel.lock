@@ -101,7 +101,7 @@
   "moduleExtensions": {
     "//ruff:extensions.bzl%ruff": {
       "general": {
-        "bzlTransitiveDigest": "n0duAZ9LMlyFE853GkCqfxnJAmIXOaQ5SQhc7b0qlHM=",
+        "bzlTransitiveDigest": "BeYSgLTWQTznhFNhisPeqx37BSlL28zxFkdmazxdVXM=",
         "usagesDigest": "rteNb+8SsozO2XdLtN7AEnk/CA4/qV5q2rnJMDRaE5c=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -139,6 +139,14 @@
               "ruff_version": "0.11.8"
             }
           },
+          "ruff_x86_64-pc-windows-msvc": {
+            "bzlFile": "@@//ruff:repositories.bzl",
+            "ruleClassName": "ruff_repositories",
+            "attributes": {
+              "platform": "x86_64-pc-windows-msvc",
+              "ruff_version": "0.11.8"
+            }
+          },
           "ruff_toolchains": {
             "bzlFile": "@@//ruff/private:toolchains_repo.bzl",
             "ruleClassName": "toolchains_repo",
@@ -147,7 +155,8 @@
                 "aarch64-unknown-linux-gnu",
                 "aarch64-apple-darwin",
                 "x86_64-unknown-linux-gnu",
-                "x86_64-apple-darwin"
+                "x86_64-apple-darwin",
+                "x86_64-pc-windows-msvc"
               ],
               "user_repository_name": "ruff"
             }

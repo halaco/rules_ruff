@@ -47,4 +47,14 @@ RUFF_PLATFORMS = {
         os = "darwin",
         ext = "tar.gz",
     ),
+    "x86_64-pc-windows-msvc": struct(
+        compatible_with = [
+            "@platforms//os:windows",
+            "@platforms//cpu:x86_64",
+        ],
+        vender = "pc",
+        arch = "x86_64",
+        os = "windows-msvc",
+        ext = "zip",
+    ),
 }
