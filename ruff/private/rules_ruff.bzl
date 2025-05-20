@@ -4,11 +4,8 @@ This module defines Bazel rules for integrating Ruff, a Python linter and format
 
 def _ruff_check_impl(ctx, extra_flag):
     ruffinfo = ctx.toolchains["//ruff:toolchain_type"].ruffinfo
-    default_info = ctx.toolchains["//ruff:toolchain_type"].default
 
     ruff_exe = ruffinfo.target_tool_path
-    if ruff_exe.startswith("external/"):
-        ruff_exe = ruff_exe.replace("external/", "../")
 
     if ctx.attr.select:
         select = "".join(["--select=", ",".join(ctx.attr.select)])
@@ -48,10 +45,11 @@ def _ruff_check_impl(ctx, extra_flag):
         runfiles = runfiles.merge(
             ctx.runfiles(files = [ctx.file.config]),
         )
-    runfiles = runfiles.merge(
-        ctx.runfiles(transitive_files = default_info.files),
-    )
 
+    # Since the rull binary file is executed at run time, tools_files must be added to the runfiles.
+    runfiles = runfiles.merge(
+        ctx.runfiles(files = ruffinfo.tool_files),
+    )
     return DefaultInfo(
         runfiles = runfiles,
         executable = exe_file,
@@ -91,11 +89,8 @@ ruff_check_fix = rule(
 
 def _ruff_format_impl(ctx, extra_flag):
     ruffinfo = ctx.toolchains["//ruff:toolchain_type"].ruffinfo
-    default_info = ctx.toolchains["//ruff:toolchain_type"].default
 
     ruff_exe = ruffinfo.target_tool_path
-    if ruff_exe.startswith("external/"):
-        ruff_exe = ruff_exe.replace("external/", "../")
 
     command = "{ruff_exe} format {extra_flag} {paths}".format(
         ruff_exe = ruff_exe,
@@ -111,8 +106,10 @@ def _ruff_format_impl(ctx, extra_flag):
     runfiles = ctx.runfiles(
         files = ctx.files.srcs,
     )
+
+    # Since the rull binary file is executed at run time, tools_files must be added to the runfiles.
     runfiles = runfiles.merge(
-        ctx.runfiles(transitive_files = default_info.files),
+        ctx.runfiles(files = ruffinfo.tool_files),
     )
 
     return DefaultInfo(
