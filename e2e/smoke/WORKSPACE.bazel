@@ -29,6 +29,11 @@ local_repository(
 # you should fetch it *before* calling this.
 # Alternatively, you can skip calling this function, so long as you've
 # already fetched all the dependencies.
-load("@io_halaco_rules_ruff//ruff:repositories.bzl", "rules_ruff_dependencies")
+load("@io_halaco_rules_ruff//ruff:repositories.bzl", "ruff_register_toolchains", "rules_ruff_dependencies")
 
 rules_ruff_dependencies()
+
+ruff_register_toolchains(
+    name = "ruff_toolchains",
+    ruff_version = "0.11.10",
+)
