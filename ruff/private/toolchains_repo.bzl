@@ -17,8 +17,6 @@ This guidance tells us how to avoid that: we put the toolchain targets in the al
 with only the toolchain attribute pointing into the platform-specific repositories.
 """
 
-# Add more platforms as needed to mirror all the binaries
-# published by the upstream project.
 load("//ruff/private:platforms.bzl", "RUFF_PLATFORMS")
 
 def _toolchains_repo_impl(repository_ctx):
