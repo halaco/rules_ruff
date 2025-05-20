@@ -8,7 +8,6 @@ def _as_path(path, is_windows):
     else:
         return path
 
-
 def _ruff_check_impl(ctx, extra_flag):
     ruffinfo = ctx.toolchains["//ruff:toolchain_type"].ruffinfo
     is_windows = ruffinfo.is_windows

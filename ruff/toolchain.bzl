@@ -8,7 +8,7 @@ RuffInfo = provider(
         "tool_files": """Files required in runfiles to make the tool executable available.
 
 May be empty if the target_tool_path points to a locally installed tool binary.""",
-        "is_windows": "True if the target os is windows"
+        "is_windows": "True if the target os is windows",
     },
 )
 
@@ -71,7 +71,7 @@ ruff_toolchain = rule(
         "is_windows": attr.bool(
             doc = "True if the target os is windows",
             mandatory = True,
-        )
+        ),
     },
     doc = """Defines a ruff executable binary toolchain.
 
