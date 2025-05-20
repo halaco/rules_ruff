@@ -33,3 +33,9 @@ arch = "aarch64"
 os = "darwin"
 vender = "apple"
 ext = "tar.gz"
+
+[platforms.x64_windows]
+arch = "x86_64"
+os = "windows-msvc"
+vender = "pc"
+ext = "zip"

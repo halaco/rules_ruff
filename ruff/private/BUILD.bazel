@@ -8,6 +8,13 @@ exports_files(
 )
 
 bzl_library(
+    name = "toolchains_repo",
+    srcs = ["toolchains_repo.bzl"],
+    visibility = ["//ruff:__subpackages__"],
+    deps = [":platforms"],
+)
+
+bzl_library(
     name = "platforms",
     srcs = ["platforms.bzl"],
     visibility = ["//ruff:__subpackages__"],
@@ -20,8 +27,8 @@ bzl_library(
 )
 
 bzl_library(
-    name = "toolchains_repo",
-    srcs = ["toolchains_repo.bzl"],
+    name = "rules_ruff",
+    srcs = ["rules_ruff.bzl"],
     visibility = ["//ruff:__subpackages__"],
 )
 
