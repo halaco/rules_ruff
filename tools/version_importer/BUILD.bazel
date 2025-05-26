@@ -1,25 +1,6 @@
 load("@io_halaco_rules_ruff//ruff:defs.bzl", "ruff_check_fix", "ruff_check_test", "ruff_format_fix", "ruff_format_test")
 load("@my_deps//:requirements.bzl", "requirement")
-load("@rules_go//go:def.bzl", "go_binary", "go_library")
 load("@rules_python//python:py_binary.bzl", "py_binary")
-
-go_library(
-    name = "version_impporter_lib",
-    srcs = ["version_importer.go"],
-    importpath = "halaco/rules_ruff/version_impporter",
-    visibility = ["//visibility:private"],
-    deps = ["@com_github_burntsushi_toml//:toml"],
-)
-
-go_binary(
-    name = "version_importer2",
-    data = [
-        "//:config.toml",
-        "//ruff/private:versions.bzl",
-    ],
-    embed = [":version_impporter_lib"],
-    visibility = ["//visibility:public"],
-)
 
 py_binary(
     name = "version_importer",
