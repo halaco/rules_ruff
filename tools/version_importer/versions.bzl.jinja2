@@ -1,0 +1,22 @@
+"""Mirror of release info
+
+This file is a mirror of the release info from the {{ name_lower }} repository.
+Run the following command to add the integrity hashes for a new version:
+ $ bazel run //tools/version_importer -- <{{ name_lower }} version>
+"""
+
+BINARY_FILE_BASE_URL = "{{ base_url }}"
+BINARY_FILE_TEMPLATE = "{{ file_template }}"
+
+{{ name }}_LAST_VERSIONS = "{{ latest_version }}"
+
+# The integrity hashes
+{{ name }}_VERSIONS = {
+{%- for version in versions %}
+    "{{ version.number }}": {
+    {%- for platform in version.platforms %}
+        "{{ platform.key }}": "{{ platform.integrity }}",
+    {%- endfor %}
+    },
+{%- endfor %}
+}
