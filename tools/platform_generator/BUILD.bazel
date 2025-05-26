@@ -1,24 +1,43 @@
-load("@bazel_gazelle//:def.bzl", "gazelle")
-load("@rules_go//go:def.bzl", "go_binary", "go_library")
+load("@io_halaco_rules_ruff//ruff:defs.bzl", "ruff_check_fix", "ruff_check_test", "ruff_format_fix", "ruff_format_test")
+load("@my_deps//:requirements.bzl", "requirement")
+load("@rules_python//python:py_binary.bzl", "py_binary")
 
-gazelle(
-    name = "gazelle",
-)
-
-go_library(
-    name = "platform_generator_lib",
-    srcs = ["platform_generator.go"],
-    importpath = "halaco/rules_ruff/platform_generator",
-    visibility = ["//visibility:private"],
-    deps = ["@com_github_burntsushi_toml//:toml"],
-)
-
-go_binary(
+py_binary(
     name = "platform_generator",
+    srcs = [
+        "platform_generator.py",
+    ],
     data = [
+        ":platforms.bzl.jinja2",
         "//:config.toml",
         "//ruff/private:platforms.bzl",
     ],
-    embed = [":platform_generator_lib"],
-    visibility = ["//visibility:public"],
+    main = "platform_generator.py",
+    deps = [
+        requirement("Jinja2"),
+    ],
+)
+
+ruff_check_test(
+    name = "ruff_check_test",
+    size = "small",
+    srcs = glob(["*.py"]),
+    config = "//:ruff_config.toml",
+)
+
+ruff_format_test(
+    name = "ruff_format_test",
+    size = "small",
+    srcs = glob(["*.py"]),
+)
+
+ruff_check_fix(
+    name = "ruff_check_fix",
+    srcs = glob(["*.py"]),
+    config = "//:ruff_config.toml",
+)
+
+ruff_format_fix(
+    name = "ruff_format_fix",
+    srcs = glob(["*.py"]),
 )

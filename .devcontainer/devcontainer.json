@@ -8,7 +8,8 @@
     "vscode": {
       "extensions": [
         "ms-azuretools.vscode-docker", // docker support
-        "BazelBuild.vscode-bazel" // bazel support
+        "BazelBuild.vscode-bazel", // bazel support
+        "samuelcolvin.jinjahtml" // jinja2 support
       ]
     }
   },
