@@ -147,8 +147,6 @@ def fetch_version_integrities(version, config_data):
                 f"Failed to fetch file: {response.status_code} {response.text}"
             )
 
-        response = requests.get(url)
-
         # Raise an exception for HTTP errors (e.g. 404, 500, etc.)
         response.raise_for_status()
 
