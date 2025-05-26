@@ -1,11 +1,14 @@
 import argparse
 import base64
+import logging
 import re
 import tomllib
 
 import requests
 from jinja2 import Environment, FileSystemLoader
 from packaging.version import Version
+
+logger = logging.getLogger(__name__)
 
 
 def read_old_versions_file(config_data):
@@ -38,7 +41,6 @@ def read_old_versions_file(config_data):
             match = version_pattern.match(line)
             if match:
                 version = match.group(1)
-                print(version)
                 # Save the integrity values into the list to keep the order in which they appear
                 versions[version] = []
 
@@ -51,7 +53,6 @@ def read_old_versions_file(config_data):
                     integrity = match.group("integrity")
                     versions[version].append((platform, integrity))
 
-    print(f"Extracted versions: {versions}")
     return versions
 
 
@@ -102,7 +103,6 @@ def fetch_ruff_releases(config_data):
             tags.append(tag_name)
         page += 1
 
-    print(tags)
     return tags
 
 
@@ -119,7 +119,6 @@ def generate_sri_from_hex_sha256(hex_hash):
 
 
 def fetch_version_integrities(version, config_data):
-    print(version)
     base_url = config_data["ruff_release"]["base_url"]
     file_template = config_data["ruff_release"]["file"]
 
@@ -149,10 +148,6 @@ def fetch_version_integrities(version, config_data):
 
         # Raise an exception for HTTP errors (e.g. 404, 500, etc.)
         response.raise_for_status()
-
-        print(response.text.split(" ")[0])
-
-        print("Download completed successfully.")
 
         integrity = generate_sri_from_hex_sha256(response.text.split(" ")[0])
 
@@ -230,10 +225,8 @@ def main():
         with open(args.config, "rb") as f:
             config_data = tomllib.load(f)
     except FileNotFoundError:
-        print(f"Config file '{args.config}' not found.")
+        logger.error(f"Config file '{args.config}' not found.")
         return
-
-    sorted(config_data.get("platforms", {}).keys())
 
     versions = read_old_versions_file(config_data)
 
@@ -244,7 +237,6 @@ def main():
             integrities = fetch_version_integrities(version, config_data)
             versions[version] = integrities
 
-    print(versions)
     write_versions_file(config_data, versions)
 
 
