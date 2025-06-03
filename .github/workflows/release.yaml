@@ -7,6 +7,11 @@ on:
       tag_name:
         required: true
         type: string
+    secrets:
+      GCP_CREDENTIALS:
+        required: true
+      GCP_PROJECT_ID:
+        required: true
   # Or, developers can manually push a tag from their clone
   push:
     tags:
