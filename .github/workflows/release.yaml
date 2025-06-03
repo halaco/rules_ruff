@@ -28,7 +28,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set TAG environment variable
-        run: echo "TAG=${{ github.ref_name || github.ref_name }}" >> $GITHUB_ENV
+        run: echo "TAG=${{ input.tag_name || github.ref_name }}" >> $GITHUB_ENV
+      - name: Debug TAG
+        run: |
+          PREFIX="rules_ruff-${TAG:1}"
+          ARCHIVE="rules_ruff-$TAG.tar.gz"
+
+          echo "TAG=${TAG}"
+          echo "PREFIX=${PREFIX}"
+          echo "ARCHIVE=${ARCHIVE}"
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -53,6 +61,7 @@ jobs:
           # generate sha256 and save to env file
           SHA=$(shasum -a 256 "$ARCHIVE" | awk '{print $1}')
           echo "${SHA}" > "$ARCHIVE.sha256"
+          echo "SHA256=${SHA}"
       - name: Upload Artifact to GCS
         run: |
           gsutil cp rules_ruff-*.tar.gz "gs://download-6e93fb8c/halaco/rules_ruff/${TAG}/"
