@@ -24,17 +24,17 @@ jobs:
     needs: release
     runs-on: ubuntu-latest
     steps:
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v2'
+      - id: "auth"
+        uses: "google-github-actions/auth@v2"
         with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
 
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v2'
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2"
         with:
-          version: '>= 524.0.0'
-          project_id: '${{ secrets.GCP_PROJECT_ID }}'
+          version: ">= 524.0.0"
+          project_id: "${{ secrets.GCP_PROJECT_ID }}"
 
       - name: Upload Artifact to GCS
         run: |
-          gsutil cp rules_ruff-*.tar.gz 'gs://download-6e93fb8c/halaco/rules_ruff/${{ inputs.tag_name }}/'
+          gsutil cp rules_ruff-*.tar.gz "gs://download-6e93fb8c/halaco/rules_ruff/${{ inputs.tag_name }}/"
