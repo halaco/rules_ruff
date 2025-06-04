@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set TAG environment variable
-        run: echo "TAG=${{ input.tag_name || github.ref_name }}" >> $GITHUB_ENV
+        run: echo "TAG=${{ inputs.tag_name || github.ref_name }}" >> $GITHUB_ENV
       - name: Debug TAG
         run: |
           PREFIX="rules_ruff-${TAG:1}"
