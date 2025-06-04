@@ -40,7 +40,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${TAG}
+          ref: ${{ env.TAG }}
       - id: "auth"
         uses: "google-github-actions/auth@v2"
         with:
